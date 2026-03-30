@@ -1,0 +1,32 @@
+CREATE OR REPLACE DATABASE PETS;
+CREATE OR REPLACE SCHEMA PETS.PETS_SCHEMA;
+
+CREATE OR REPLACE STAGE PETS.PETS_SCHEMA.EX_STAGE
+URL='s3://snowflake-dbt-hands-on/'
+file_format=(TYPE = JSON);
+
+
+select 
+t.$1
+from @PETS.PETS_SCHEMA.EX_STAGE t;
+
+create or replace table PETS.PETS_SCHEMA.PETS1(
+LASTNAME STRING,
+AGE INT,
+HOBBIE STRING,
+PET_NAME STRING,
+PET_TYPE STRING
+);
+
+COPY INTO PETS.PETS_SCHEMA.PETS1
+FROM (
+SELECT 
+t.$1:name:last,
+t.$1:age,
+t.$1:hobbies[0],
+t.$1:pet:name,
+t.$1:pet:type
+from @PETS.PETS_SCHEMA.EX_STAGE t
+);
+
+select * from PETS.PETS_SCHEMA.PETS1;
