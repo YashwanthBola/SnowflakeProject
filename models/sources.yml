@@ -1,0 +1,7 @@
+sources:
+  - name: dbt_demo
+    database: DEMO
+    schema: SCHEMA1
+    tables:
+      - name: WEATHER
+      - name: BIKE1
